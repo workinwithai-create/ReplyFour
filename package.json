@@ -1,0 +1,7 @@
+{
+  "name": "replyfour",
+  "private": true,
+  "scripts": {
+    "build": "mkdir -p dist && cp index.html styles.css app.js dist/"
+  }
+}

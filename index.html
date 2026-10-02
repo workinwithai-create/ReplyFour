@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ReplyFour — call and reply desk</title>
+  <meta name="description" content="Four live-instrument bars that answer the hook instead of reprinting it." />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+<main>
+  <p class="eyebrow">WorkinWithAI · live chairs</p>
+  <h1>ReplyFour</h1>
+  <p class="lead">Call-and-reply desk. Generators print the hook as one line and loop it. Session players leave the phrase, then a different chair answers. Live piano, upright, nylon, kit, trumpet, violin. Audio stays in the tab.</p>
+  <p class="status" id="status">Seating chairs…</p>
+  <p class="eyebrow">Groove</p>
+  <div class="row" id="grooves"></div>
+  <p class="eyebrow">Reply</p>
+  <div class="row" id="recipes"></div>
+  <p class="eyebrow">Form · call 1–4 · reply 5–8</p>
+  <div class="bars" id="bars"></div>
+  <h2>Punch list</h2>
+  <pre id="punch"></pre>
+</main>
+<div class="dock">
+  <button id="playA">A · Loop</button>
+  <button id="playB">B · Reply</button>
+  <button id="play8">8 · Reply only</button>
+  <button class="ghost" id="stop">Stop</button>
+  <button class="ghost" id="bounce">Bounce reply</button>
+  <button class="ghost" id="copy">Copy punch</button>
+</div>
+<script src="./app.js"></script>
+</body>
+</html>
