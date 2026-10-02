@@ -1,7 +1,9 @@
 {
   "name": "replyfour",
   "private": true,
+  "type": "module",
   "scripts": {
-    "build": "mkdir -p dist && cp index.html styles.css app.js dist/"
+    "build": "mkdir -p dist && cp index.html styles.css app.js dist/",
+    "test": "node tests/export-smoke.mjs"
   }
 }

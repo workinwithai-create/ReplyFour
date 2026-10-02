@@ -6,7 +6,7 @@ Suno and loop DAWs print the hook as one line and loop it. Session players leave
 
 Live samples only — FluidR3 acoustic grand, upright bass, nylon guitar, trumpet, violin, and an acoustic kit from the PreEight sample CDN. No oscillators. Audio never leaves the tab.
 
-## Distinct from yesterday and the rest of the line
+## Distinct from the rest of the line
 
 | Tool | Job |
 | --- | --- |
@@ -15,21 +15,24 @@ Live samples only — FluidR3 acoustic grand, upright bass, nylon guitar, trumpe
 | BorrowFour | Borrow a chord so the loop can leave the key |
 | StrumFour | Seat a nylon strum under the loop |
 | BreathFour | Four bars of exhale between chorus and verse 2 |
-| TagFour | Four bars after the money chorus, then silence |
-| PreEight | Eight-bar musical climb into the hook |
-| LiftTwo | Two-bar production lift into the hook |
-| AfterHook | Eight-bar post-chorus vamp |
-| EndEight | Last eight of the record |
-| LastHook | Rewrite the last chorus |
-| ModEight | Eight-bar modal shift |
 | **ReplyFour** | Four bars of call, four bars of a different chair answering |
 
-Yesterday's ship was ThirdFour (harmony stacked on the same line). ReplyFour is the missing conversation: the hook talks, then someone else talks back.
+## License and checkout
 
-## Pricing
+Preview playback and the punch list stay free. The reply WAV bounce requires a Forge Pass.
 
-One-time **$19** on Lemon Squeezy. Mirror on Gumroad. Do not subscribe. Forge Pass stays the cloud bundle.
+- Live Hub checkout: `POST https://workinwithai.com/api/checkout` with `{ lookupKey: "forge-pass-monthly", returnTo }`.
+- Live Hub identity: `GET https://workinwithai.com/api/entitlements/me`. Bounce unlocks only when `signedIn && hasBundle`.
+- There is no ReplyFour lookup key and no live Lemon Squeezy product. The $19 one-time price in earlier copy is not connected. Do not treat a missing key as entitled.
 
-## License
+## Production readiness (2026-10-02)
 
-MIT. workinwithai-create.
+| Criterion | Status | Evidence |
+| --- | --- | --- |
+| Complete source on GitHub | Met | `workinwithai-create/ReplyFour` |
+| Permanent live deployment works | Partial | Vercel project `replyfour` production deploy exists. SSO is `all_except_custom_domains`, so `*.vercel.app` is not a public permanent URL. Custom domain not verified. |
+| Real checkout and license delivery connected | Met for Forge Pass | Hub checkout + entitlements. Fail-closed without `hasBundle`. No desk-specific SKU. |
+| Core exports tested | Met | `tests/export-smoke.mjs` checks WAV header and that bounce is gated |
+| Mobile onboarding verified | Partial | First-run dialog, 44px targets, in-app browser warning, safe-area dock. No physical iPhone sign-off. |
+
+**Not shipped.**

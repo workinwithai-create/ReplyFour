@@ -1,4 +1,5 @@
 const CDN = "https://cdn.jsdelivr.net/gh/workinwithai-create/PreEight@main/public/samples";
+const HUB = "https://workinwithai.com";
 const STEPS = 16;
 const CALL = 4;
 const REPLY = 4;
@@ -24,7 +25,7 @@ const grooves = [
     call:[bar("Dm",[38,41,45,50],[38,45,50],26,62),bar("Bb",[34,38,41,46],[34,41,46],34,65),bar("F",[41,45,48,53],[41,48,53],29,65),bar("C",[36,40,43,48],[36,43,48],24,67)],
     reply:[bar("Dm",[38,41,45,50],[38,45,50],26,74),bar("Gm",[43,46,50,55],[43,50,55],31,70),bar("A",[33,37,40,45],[33,40,45],33,69),bar("Dm",[38,41,45,50],[38,45,50],26,62)] }
 ];
-const state = { groove: grooves[0], recipe: recipes[0], playing:false, bar:0, mode:null };
+const state = { groove: grooves[0], recipe: recipes[0], playing:false, bar:0, mode:null, license: { signedIn:false, hasBundle:false, reason:"unchecked" } };
 let ctx, bus, buffers = {};
 const FILES = [
   ["kick","drums/kick.mp3",36],["snare","drums/snare.mp3",38],["hat","drums/hihat.mp3",42],["crash","drums/crash.mp3",49],
@@ -33,6 +34,45 @@ const FILES = [
   ["gE2","guitar/E2.mp3",40],["gA2","guitar/A2.mp3",45],["gE3","guitar/E3.mp3",52],
   ["tC4","trumpet/C4.mp3",60],["vA3","violin/A3.mp3",57]
 ];
+
+function entitled() { return state.license.signedIn && state.license.hasBundle; }
+
+async function refreshLicense() {
+  const el = document.getElementById("license");
+  try {
+    const res = await fetch(`${HUB}/api/entitlements/me`, { credentials: "include" });
+    const data = await res.json();
+    state.license = {
+      signedIn: !!data.signedIn,
+      hasBundle: !!data.hasBundle,
+      reason: data.reason || (data.signedIn ? "no-pass" : "login"),
+      loginUrl: data.loginUrl || `${HUB}/login`
+    };
+  } catch (e) {
+    state.license = { signedIn:false, hasBundle:false, reason:"hub-unreachable", loginUrl:`${HUB}/login` };
+  }
+  if (!el) return;
+  if (entitled()) el.textContent = "Forge Pass active · reply bounce unlocked";
+  else if (state.license.signedIn) el.textContent = "Signed in · Forge Pass required to bounce the reply";
+  else el.textContent = "Preview is free · Forge Pass unlocks the WAV bounce";
+}
+
+async function startCheckout() {
+  const returnTo = location.origin + "/";
+  try {
+    const res = await fetch(`${HUB}/api/checkout`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lookupKey: "forge-pass-monthly", returnTo })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (data.url) { location.href = data.url; return; }
+  } catch (e) { /* fall through to hub login */ }
+  const next = encodeURIComponent(returnTo);
+  location.href = `${HUB}/login?next=${next}`;
+}
+
 async function ensureCtx() {
   if (!ctx) {
     ctx = new AudioContext();
@@ -135,6 +175,11 @@ function encodeWav(audioBuffer) {
   return new Blob([view], { type: "audio/wav" });
 }
 async function bounce() {
+  if (!entitled()) {
+    document.getElementById("status").textContent = "Bounce locked · Forge Pass delivers the license";
+    document.getElementById("onboard").showModal();
+    return;
+  }
   if (!Object.keys(buffers).length) await load();
   const stepDur = 60 / state.groove.bpm / 4;
   const dur = REPLY * STEPS * stepDur + 0.8;
@@ -186,11 +231,32 @@ function paintBars() {
   }
 }
 function render() { paintGrooves(); paintRecipes(); paintBars(); document.getElementById("punch").textContent = punch(); }
+
+function inAppBrowser() {
+  const ua = navigator.userAgent || "";
+  return /Instagram|FBAN|FBAV|Line\/|Twitter|Grok/i.test(ua);
+}
+function showOnboard(force) {
+  const dlg = document.getElementById("onboard");
+  const seen = localStorage.getItem("replyfour-onboard") === "1";
+  if (inAppBrowser()) document.getElementById("inapp").hidden = false;
+  if (force || !seen) dlg.showModal();
+}
+
 document.getElementById("playA").onclick = () => play("loop");
 document.getElementById("playB").onclick = () => play("cut");
 document.getElementById("play8").onclick = () => play("eight");
 document.getElementById("stop").onclick = stop;
 document.getElementById("bounce").onclick = () => bounce();
 document.getElementById("copy").onclick = () => navigator.clipboard.writeText(punch());
+document.getElementById("buy").onclick = () => startCheckout();
+document.getElementById("sign").onclick = () => { location.href = state.license.loginUrl || `${HUB}/login?next=${encodeURIComponent(location.href)}`; };
+document.getElementById("gotit").onclick = () => {
+  localStorage.setItem("replyfour-onboard", "1");
+  document.getElementById("onboard").close();
+};
+document.getElementById("help").onclick = () => showOnboard(true);
 render();
 load();
+refreshLicense();
+showOnboard(false);

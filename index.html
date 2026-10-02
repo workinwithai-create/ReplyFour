@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <title>ReplyFour — call and reply desk</title>
   <meta name="description" content="Four live-instrument bars that answer the hook instead of reprinting it." />
   <link rel="stylesheet" href="./styles.css" />
@@ -13,6 +15,8 @@
   <h1>ReplyFour</h1>
   <p class="lead">Call-and-reply desk. Generators print the hook as one line and loop it. Session players leave the phrase, then a different chair answers. Live piano, upright, nylon, kit, trumpet, violin. Audio stays in the tab.</p>
   <p class="status" id="status">Seating chairs…</p>
+  <p class="license" id="license">Checking Forge Pass…</p>
+  <p class="warn" id="inapp" hidden>Opened inside another app. For bounce and checkout, use Safari or Chrome and Add to Home Screen.</p>
   <p class="eyebrow">Groove</p>
   <div class="row" id="grooves"></div>
   <p class="eyebrow">Reply</p>
@@ -29,7 +33,21 @@
   <button class="ghost" id="stop">Stop</button>
   <button class="ghost" id="bounce">Bounce reply</button>
   <button class="ghost" id="copy">Copy punch</button>
+  <button class="ghost" id="buy">Get Forge Pass</button>
+  <button class="ghost" id="sign">Sign in</button>
+  <button class="ghost" id="help">How this works</button>
 </div>
+<dialog id="onboard">
+  <p class="eyebrow">First session</p>
+  <h2>Hear the answer, then take it.</h2>
+  <ol>
+    <li>Pick a groove. A · Loop is the call, free.</li>
+    <li>B · Reply is the other chair. 8 plays the answer alone.</li>
+    <li>Copy the punch list into the DAW.</li>
+    <li>Bounce is the paid export. Forge Pass ($24/mo on the hub) delivers the license. There is no separate ReplyFour checkout key yet.</li>
+  </ol>
+  <button id="gotit">Got it</button>
+</dialog>
 <script src="./app.js"></script>
 </body>
 </html>
